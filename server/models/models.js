@@ -1,6 +1,8 @@
 const sequelize = require('../db');
-const {DataTypes} = require('sequelize');
+const {DataTypes, INTEGER} = require('sequelize');
 
+
+//описания моделей. Поля берем из диаграммы 
 //модель "Пользователь"
 const User = sequelize.define('user', {
 	id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
@@ -52,3 +54,57 @@ const DeviceInfo = sequelize.define('device_info', {
 	name: {type: DataTypes. STRING, allowNull: false},
 	description: {type: DataTypes. STRING, allowNull: false},
 });
+
+//связующая модель - таблица для связей "Many to Many"
+//в таблице указывается какой бренд принадлежит какому типу и какой бренд связан с каким типом
+const TypeBrand = sequelize.define('type_brand', {
+	id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true}
+});
+
+//связи между моделями. Типы связей берем из диаграммы
+//указываем модель (User), тип связи (hasOne или hasMany), 
+//и модель, с которой устанавливаем (Basket)
+//второй строкой указываем через ключевое слово belongsTo какой сущности принадлежит объект, с которым устанавливается связь
+User.hasOne(Basket)
+Basket.belongsTo(User)
+
+User.hasMany(Rating)
+Rating.belongsTo(User)
+
+Basket.hasMany(BasketDevice)
+BasketDevice.belongsTo(Basket)
+
+Type.hasMany(Device)
+Device.belongsTo(Type)
+
+Brand.hasMany(Device)
+Device.belongsTo(Brand)
+
+Device.hasMany(Rating)
+Rating.belongsTo(Device)
+
+Device.hasMany(BasketDevice)
+BasketDevice.belongsTo(Device)
+
+Device.hasMany(DeviceInfo)
+DeviceInfo.belongsTo(Device)
+
+//связи Many to Many
+//используется ключеваое слово belongsToMany
+//требуется указать связующую модель - второй аргумент, в который помещается объект со связующей моделью с ключевым словом through
+Type.belongsToMany(Brand, {through: TypeBrand})
+Brand.belongsToMany(Type, {through: TypeBrand})
+
+module.exports = {
+	User,
+	Basket,
+	BasketDevice,
+	Device,
+	Type,
+	Brand,
+	Rating,
+	TypeBrand,
+	DeviceInfo
+}
+
+start();

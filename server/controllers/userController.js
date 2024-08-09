@@ -9,7 +9,9 @@ class UserController {
 	}
 	//функция проверки, авторизован ли пользователь
 	async check(req, res) {
-		
+		//универсальный обработчик ошибки
+		const {id} = req.query;
+		res.json(id);
 	}
 }
 

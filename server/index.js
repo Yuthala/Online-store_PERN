@@ -6,7 +6,8 @@ const sequelize = require ('./db');
 
 const models = require('./models/models');
 const cors = require('cors');
-const router = require('./routes/index') //импорт основного роутера
+const router = require('./routes/index');
+const errorHandler = require('./middleware/ErrorHandlingMiddleware'); //импорт основного роутера
 
 const PORT = 80;
 
@@ -15,6 +16,9 @@ app.use(cors());
 app.use(express.json());
 //первый параметр - url, по которому роутер должен обрабатываться. Второй параметр - сам роутер
 app.use('/api', router);
+
+//Обработка  ошибок, последний middleware
+app.use(errorHandler);
 
 //проверка, что get запросы работают. Проверить в браузере localhost:80 или через Postman
 // app.get('/', (req, res) => {
